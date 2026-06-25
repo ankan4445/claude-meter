@@ -1,5 +1,5 @@
 {
-  "name": "session-manager",
+  "name": "claude-meter",
   "version": "1.0.0",
   "description": "Track token usage, cost, and time savings per Claude Code session. Provides a /session-manager skill and a Stop hook that accumulates token metrics after every turn.",
   "owner": {

@@ -19,15 +19,20 @@ This plugin is distributed through a Claude Code marketplace.
 1. Add the marketplace (point it at this repo):
 
    ```bash
-   /plugin marketplace add <path-or-url-to-this-repo>
+   /plugin marketplace add ankan4445/claude-meter
    ```
 
-2. Install the plugin:
+   You can also point it at the full URL or a local clone:
 
    ```bash
-   /plugin install session-manager
+   /plugin marketplace add https://github.com/ankan4445/claude-meter
+   /plugin marketplace add /path/to/local/clone
    ```
+2. Install the plugin from the `claude-meter` marketplace:
 
+   ```bash
+   /plugin install session-manager@claude-meter
+   ```
 3. Wire up the token-tracking Stop hook (required once before first use):
 
    ```bash
@@ -36,20 +41,28 @@ This plugin is distributed through a Claude Code marketplace.
 
 > Without `init`, time and activity are still tracked, but token fields show `—`.
 
+### Managing the marketplace
+
+```bash
+/plugin marketplace list                # list configured marketplaces
+/plugin marketplace update claude-meter # pull the latest plugin version
+/plugin marketplace remove claude-meter # remove the marketplace
+```
+
 ## Usage
 
 Invoke the skill with no argument to open the menu, or pass a mode directly:
 
-| Mode | Description |
-| --- | --- |
-| `init` | Wire up the token-tracking Stop hook (run once) |
-| `start [label]` | Begin a new tracked session |
-| `show` | Display metrics for the current session |
-| `end` | Stop tracking and show the final report |
-| `clear` | Archive the current session and start fresh |
-| `resume <name>` | Continue a previously archived session |
-| `stats <name>` | Aggregate all archived sessions for a name |
-| `token-breakdown [name]` | Analyse where tokens were spent |
+| Mode                       | Description                                     |
+| -------------------------- | ----------------------------------------------- |
+| `init`                   | Wire up the token-tracking Stop hook (run once) |
+| `start [label]`          | Begin a new tracked session                     |
+| `show`                   | Display metrics for the current session         |
+| `end`                    | Stop tracking and show the final report         |
+| `clear`                  | Archive the current session and start fresh     |
+| `resume <name>`          | Continue a previously archived session          |
+| `stats <name>`           | Aggregate all archived sessions for a name      |
+| `token-breakdown [name]` | Analyse where tokens were spent                 |
 
 Examples:
 
