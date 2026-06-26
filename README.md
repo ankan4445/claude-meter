@@ -12,6 +12,24 @@ metrics after every turn.
 - Elapsed time per session
 - Per-session archiving, stats, and token breakdown (thinking / replies / tools)
 
+## Prerequisites
+
+This plugin runs inside [Claude Code](https://code.claude.com/docs/en/quickstart).
+If you don't already have the Claude Code terminal installed, install it first:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+Then launch it from your project directory:
+
+```bash
+claude
+```
+
+See the [Claude Code quickstart](https://code.claude.com/docs/en/quickstart) for
+full setup and authentication instructions.
+
 ## Installation
 
 This plugin is distributed through a Claude Code marketplace.
@@ -64,12 +82,41 @@ Invoke the skill with no argument to open the menu, or pass a mode directly:
 | `stats <name>`           | Aggregate all archived sessions for a name      |
 | `token-breakdown [name]` | Analyse where tokens were spent                 |
 
-Examples:
+### First time in a project: run `init`
+
+The **first time** you use the plugin in a project, you **must** run `init`. This
+registers the token-tracking `Stop` hook in the project. Without it, the hook is
+never wired up, so token metrics won't be recorded (time and activity still are).
 
 ```bash
-/session-manager start "refactor-auth"
+/session-manager init
+```
+
+You only need to do this once per project.
+
+### Example flow
+
+A typical tracked session, from start to finish:
+
+```bash
+# 1. Begin a new session with a label
+/session-manager start "xyz"
+
+# 2. Check live metrics at any point while you work
 /session-manager show
+
+# 3. Stop tracking and print the final report
 /session-manager end
+```
+
+Later, pick the session back up and inspect aggregate numbers:
+
+```bash
+# 4. Continue the previously archived session
+/session-manager resume "xyz"
+
+# 5. Aggregate all archived runs for that name
+/session-manager stats "xyz"
 ```
 
 ## How it works
