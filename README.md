@@ -1,7 +1,9 @@
+se
+
 # Session Manager
 
 A Claude Code plugin that tracks **token usage, cost, time, and activity** per session.
-It provides a `/session-manager` slash command (plus a matching skill for natural-language
+It provides a `/meter` slash command (plus a matching skill for natural-language
 triggers) and a `Stop` hook that accumulates token metrics after every turn.
 
 ## What it tracks
@@ -69,7 +71,7 @@ This plugin is distributed through a Claude Code marketplace.
 3. Start a session — the token-tracking Stop hook is registered automatically:
 
    ```bash
-   /session-manager start
+   /meter start
    ```
 
 > Token tracking works out of the box; no manual hook setup is needed.
@@ -84,18 +86,18 @@ This plugin is distributed through a Claude Code marketplace.
 
 ## Usage
 
-Type `/session-manager` in the Claude Code chat. Invoke it with no argument to open the
+Type `/meter` in the Claude Code chat. Invoke it with no argument to open the
 menu, or pass a mode directly:
 
-| Mode                       | Description                                     |
-| -------------------------- | ----------------------------------------------- |
-| `start [label]`          | Begin a new tracked session                     |
-| `show`                   | Display metrics for the current session         |
-| `end`                    | Stop tracking and show the final report         |
-| `clear`                  | Archive the current session and start fresh     |
-| `resume <name>`          | Continue a previously archived session          |
-| `stats <name>`           | Aggregate all archived sessions for a name      |
-| `token-breakdown [name]` | Analyse where tokens were spent                 |
+| Mode                       | Description                                 |
+| -------------------------- | ------------------------------------------- |
+| `start [label]`          | Begin a new tracked session                 |
+| `show`                   | Display metrics for the current session     |
+| `end`                    | Stop tracking and show the final report     |
+| `clear`                  | Archive the current session and start fresh |
+| `resume <name>`          | Continue a previously archived session      |
+| `stats <name>`           | Aggregate all archived sessions for a name  |
+| `token-breakdown [name]` | Analyse where tokens were spent             |
 
 ### Example flow
 
@@ -103,23 +105,23 @@ A typical tracked session, from start to finish:
 
 ```bash
 # 1. Begin a new session with a label
-/session-manager start "xyz"
+/meter start "xyz"
 
 # 2. Check live metrics at any point while you work
-/session-manager show
+/meter show
 
 # 3. Stop tracking and print the final report
-/session-manager end
+/meter end
 ```
 
 Later, pick the session back up and inspect aggregate numbers:
 
 ```bash
 # 4. Continue the previously archived session
-/session-manager resume "xyz"
+/meter resume "xyz"
 
 # 5. Aggregate all archived runs for that name
-/session-manager stats "xyz"
+/meter stats "xyz"
 ```
 
 ## How it works
