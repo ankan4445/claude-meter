@@ -1,8 +1,8 @@
 # Session Manager
 
 A Claude Code plugin that tracks **token usage, cost, time, and activity** per session.
-It provides a `/session-manager` skill and a `Stop` hook that accumulates token
-metrics after every turn.
+It provides a `/session-manager` slash command (plus a matching skill for natural-language
+triggers) and a `Stop` hook that accumulates token metrics after every turn.
 
 ## What it tracks
 
@@ -15,11 +15,26 @@ metrics after every turn.
 ## Prerequisites
 
 This plugin runs inside [Claude Code](https://code.claude.com/docs/en/quickstart).
-If you don't already have the Claude Code terminal installed, install it first:
+If you don't already have the Claude Code terminal installed, install it first.
+
+**With npm:**
 
 ```bash
 npm install -g @anthropic-ai/claude-code
 ```
+
+**Without npm (native installer):**
+
+- macOS / Linux:
+
+  ```bash
+  curl -fsSL https://claude.ai/install.sh | bash
+  ```
+- Windows (PowerShell):
+
+  ```powershell
+  irm https://claude.ai/install.ps1 | iex
+  ```
 
 Then launch it from your project directory:
 
@@ -36,7 +51,7 @@ This plugin is distributed through a Claude Code marketplace.
 
 1. Add the marketplace (point it at this repo):
 
-   ```bash
+   ```JavaScript
    /plugin marketplace add ankan4445/claude-meter
    ```
 
@@ -51,13 +66,13 @@ This plugin is distributed through a Claude Code marketplace.
    ```bash
    /plugin install session-manager@claude-meter
    ```
-3. Wire up the token-tracking Stop hook (required once before first use):
+3. Start a session — the token-tracking Stop hook is registered automatically:
 
    ```bash
-   /session-manager init
+   /session-manager start
    ```
 
-> Without `init`, time and activity are still tracked, but token fields show `—`.
+> Token tracking works out of the box; no manual hook setup is needed.
 
 ### Managing the marketplace
 
@@ -69,11 +84,11 @@ This plugin is distributed through a Claude Code marketplace.
 
 ## Usage
 
-Invoke the skill with no argument to open the menu, or pass a mode directly:
+Type `/session-manager` in the Claude Code chat. Invoke it with no argument to open the
+menu, or pass a mode directly:
 
 | Mode                       | Description                                     |
 | -------------------------- | ----------------------------------------------- |
-| `init`                   | Wire up the token-tracking Stop hook (run once) |
 | `start [label]`          | Begin a new tracked session                     |
 | `show`                   | Display metrics for the current session         |
 | `end`                    | Stop tracking and show the final report         |
@@ -81,18 +96,6 @@ Invoke the skill with no argument to open the menu, or pass a mode directly:
 | `resume <name>`          | Continue a previously archived session          |
 | `stats <name>`           | Aggregate all archived sessions for a name      |
 | `token-breakdown [name]` | Analyse where tokens were spent                 |
-
-### First time in a project: run `init`
-
-The **first time** you use the plugin in a project, you **must** run `init`. This
-registers the token-tracking `Stop` hook in the project. Without it, the hook is
-never wired up, so token metrics won't be recorded (time and activity still are).
-
-```bash
-/session-manager init
-```
-
-You only need to do this once per project.
 
 ### Example flow
 
@@ -122,7 +125,8 @@ Later, pick the session back up and inspect aggregate numbers:
 ## How it works
 
 - Session state lives in `.claude/sessions/active.json`.
-- The `Stop` hook (`.claude/hooks/record-session-usage.js`) fires after every
+- The plugin's `Stop` hook (registered via `hooks/hooks.json`) fires after every
   turn to accumulate token data.
 - Ending or clearing a session archives it to
   `.claude/sessions/<name>-<id>.json`.
+

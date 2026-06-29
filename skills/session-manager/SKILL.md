@@ -27,9 +27,7 @@ If the user invokes the skill without arguments, present this menu and wait:
 
 > **What would you like to do?**
 >
-> ⚠ **First time?** Run **init** before anything else to wire up token tracking.
->
-> 1. **init** — Wire up the token-tracking Stop hook (required once before first use)
+> 1. **init** — Re-check token tracking (optional; the hook is auto-registered)
 > 2. **start** — Begin a new tracked session (records start time, clears counters)
 > 3. **show** — Display metrics for the current session
 > 4. **end** — Stop tracking and show the final report
@@ -49,9 +47,9 @@ skip the menu and go directly to that mode.
 
 ### Hook setup (for token tracking)
 
-Token data is accumulated by `.claude/hooks/record-session-usage.js`, which
-fires on every Stop event. Without this hook, the skill still tracks time and
-activity but shows `—` for token fields.
+Token data is accumulated by the plugin's bundled Stop hook, which is registered
+automatically via `hooks/hooks.json` when the plugin is installed and fires on
+every Stop event. No manual setup is required; token tracking works out of the box.
 
 Check whether the hook is wired up:
 
@@ -71,9 +69,9 @@ try {
 
 If `HOOK_MISSING`, warn the user:
 
-> ⚠ Token tracking hook is not configured. Time and activity metrics will
-> still be recorded, but token counts will show as `—`. Run
-> `/session-manager init` once to enable full tracking.
+> ⚠ Token tracking hook is not detected. Token tracking is normally registered
+> automatically by the plugin. Try reinstalling the plugin or running
+> `/reload-plugins`. Time and activity metrics are still recorded.
 
 ---
 
@@ -627,74 +625,22 @@ shows a per-session breakdown plus totals.
 
 ## Mode: `init`
 
-Wire up `.claude/hooks/record-session-usage.js` as a Stop hook in
-`.claude/settings.json`. This is a one-time setup step.
+Token tracking is wired automatically: the plugin registers its bundled Stop
+hook through `hooks/hooks.json` on install. This mode just confirms tracking is
+active — there is nothing to set up manually.
 
 ### Steps
 
-1. Verify the hook script exists:
+1. Confirm the plugin hook is loaded:
 
-   ```bash
-   node -e "
-   const fs = require('fs')
-   console.log(fs.existsSync('.claude/hooks/record-session-usage.js') ? 'EXISTS' : 'MISSING')
-   "
-   ```
+   > Token tracking is registered automatically by the plugin. Run a turn, then
+   > `/session-manager show` to confirm token fields populate.
 
-   If `MISSING`, tell the user:
+2. If token fields stay `—`, tell the user the hook is not firing and suggest:
 
-   > The hook script is missing at `.claude/hooks/record-session-usage.js`.
-   > It should have been created when this skill was set up. Please re-run
-   > the skill setup or manually restore the file.
-
-2. Read the current `.claude/settings.json`:
-
-   ```bash
-   node -e "
-   const fs = require('fs')
-   try {
-     console.log(fs.readFileSync('.claude/settings.json', 'utf8'))
-   } catch { console.log('{}') }
-   "
-   ```
-
-3. Check whether the hook already exists (look for `record-session-usage` in the
-   `hooks.Stop` array). If it does, print:
-
-   > Hook already configured. Token tracking is active.
-
-4. If not yet configured, add the Stop hook entry and save:
-
-   ```bash
-   node -e "
-   const fs = require('fs')
-   const settingsPath = '.claude/settings.json'
-   const s = JSON.parse(fs.readFileSync(settingsPath, 'utf8') || '{}')
-   if (!s.hooks) s.hooks = {}
-   if (!s.hooks.Stop) s.hooks.Stop = []
-   const alreadyAdded = s.hooks.Stop.some(h =>
-     JSON.stringify(h).includes('record-session-usage')
-   )
-   if (!alreadyAdded) {
-     s.hooks.Stop.push({
-       matcher: '',
-       hooks: [{
-         type: 'command',
-         command: 'node .claude/hooks/record-session-usage.js'
-       }]
-     })
-   }
-   fs.writeFileSync(settingsPath, JSON.stringify(s, null, 2))
-   console.log('HOOK_ADDED')
-   "
-   ```
-
-5. Print confirmation:
-
-   > Stop hook added to `.claude/settings.json`. Token usage will now be
-   > accumulated after every turn into `.claude/sessions/active.json`.
-   >
-   > Start a new session to begin tracking: `/session-manager start`
+   > Run `/reload-plugins` (or reinstall `session-manager@claude-meter`) so the
+   > bundled Stop hook is picked up. Do **not** add a hook to
+   > `.claude/settings.json` manually — that would double-count tokens.
 
 ---
 
