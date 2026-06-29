@@ -3,8 +3,9 @@ se
 # Session Manager
 
 A Claude Code plugin that tracks **token usage, cost, time, and activity** per session.
-It provides a `/meter` slash command (plus a matching skill for natural-language
-triggers) and a `Stop` hook that accumulates token metrics after every turn.
+It provides a `/session-manager:meter` slash command (plus a matching skill for
+natural-language triggers) and a `Stop` hook that accumulates token metrics after
+every turn.
 
 ## What it tracks
 
@@ -71,7 +72,7 @@ This plugin is distributed through a Claude Code marketplace.
 3. Start a session — the token-tracking Stop hook is registered automatically:
 
    ```bash
-   /meter start
+   /session-manager:meter start
    ```
 
 > Token tracking works out of the box; no manual hook setup is needed.
@@ -86,8 +87,8 @@ This plugin is distributed through a Claude Code marketplace.
 
 ## Usage
 
-Type `/meter` in the Claude Code chat. Invoke it with no argument to open the
-menu, or pass a mode directly:
+Type `/session-manager:meter` in the Claude Code chat. Invoke it with no argument
+to open the menu, or pass a mode directly:
 
 | Mode                       | Description                                 |
 | -------------------------- | ------------------------------------------- |
@@ -105,23 +106,23 @@ A typical tracked session, from start to finish:
 
 ```bash
 # 1. Begin a new session with a label
-/meter start "xyz"
+/session-manager:meter start "xyz"
 
 # 2. Check live metrics at any point while you work
-/meter show
+/session-manager:meter show
 
 # 3. Stop tracking and print the final report
-/meter end
+/session-manager:meter end
 ```
 
 Later, pick the session back up and inspect aggregate numbers:
 
 ```bash
 # 4. Continue the previously archived session
-/meter resume "xyz"
+/session-manager:meter resume "xyz"
 
 # 5. Aggregate all archived runs for that name
-/meter stats "xyz"
+/session-manager:meter stats "xyz"
 ```
 
 ## How it works
