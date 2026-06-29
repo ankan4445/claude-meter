@@ -1,5 +1,3 @@
-se
-
 # Session Manager
 
 A Claude Code plugin that tracks **token usage, cost, time, and activity** per session.
