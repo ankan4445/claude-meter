@@ -2,8 +2,21 @@
   "name": "session-manager",
   "version": "1.0.0",
   "description": "Track token usage, cost, and time per Claude Code session. Provides a /session-manager command + skill and a Stop hook that accumulates token metrics after every turn.",
+  "keywords": ["session", "tokens", "cost", "tracking", "analytics"],
+  "license": "MIT",
+  "homepage": "https://github.com/ankan4445/claude-meter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ankan4445/claude-meter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ankan4445/claude-meter/issues"
+  },
   "author": {
     "name": "Ankan Mondal",
-    "email": "ankan4445@gmail.com"
+    "email": "private4445@gmail.com"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

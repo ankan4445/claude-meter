@@ -1,4 +1,10 @@
-# Session Manager
+# claude-meter / session-manager
+
+[![CI](https://github.com/ankan4445/claude-meter/actions/workflows/ci.yml/badge.svg)](https://github.com/ankan4445/claude-meter/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js ≥18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
+
+> **Naming note:** `claude-meter` is the marketplace/repository name. `session-manager` is the plugin installed from it. The slash command is `/session-manager:meter`.
 
 A Claude Code plugin that tracks **token usage, cost, time, and activity** per session.
 It provides a `/session-manager:meter` slash command (plus a matching skill for
@@ -52,7 +58,7 @@ This plugin is distributed through a Claude Code marketplace.
 
 1. Add the marketplace (point it at this repo):
 
-   ```JavaScript
+   ```bash
    /plugin marketplace add ankan4445/claude-meter
    ```
 
@@ -130,4 +136,27 @@ Later, pick the session back up and inspect aggregate numbers:
   turn to accumulate token data.
 - Ending or clearing a session archives it to
   `.claude/sessions/<name>-<id>.json`.
+- Pricing is fetched from the [LiteLLM model pricing list](https://github.com/BerriAI/litellm) on first use and cached locally for 24 hours. If the fetch fails or is blocked by a firewall, a hardcoded fallback table is used — no session data is ever sent externally.
+
+## Troubleshooting
+
+**Tokens show as `0` or `—` after a turn**
+
+The Stop hook isn't firing. Run `/session-manager:meter init` to check status, then try `/reload-plugins`. Do **not** add the hook manually to `.claude/settings.json` — that would double-count tokens.
+
+**Cost estimate looks wrong**
+
+The plugin uses the model ID from your transcript. If your model isn't in the fallback pricing table, it falls back to `claude-sonnet-4-6` rates. Check `.claude/sessions/pricing-cache.json` to see what rates are loaded.
+
+**Session data not appearing after `/clear`**
+
+The transcript path updates on the first turn of the new chat. Run one prompt after `/clear`, then check `/session-manager:meter show`.
+
+**`active.json` is missing**
+
+No session has been started in this project. Run `/session-manager:meter start` first.
+
+**Behind a corporate firewall (pricing fetch blocked)**
+
+The pricing fetch to `raw.githubusercontent.com` will time out after 5 seconds and fall back to the hardcoded table. No action needed — session tracking still works fully.
 

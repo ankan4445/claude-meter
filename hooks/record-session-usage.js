@@ -460,3 +460,16 @@ async function main() {
 }
 
 main().catch(() => {})
+
+// Export pure functions for testing
+if (typeof module !== 'undefined') {
+  module.exports = {
+    MODEL_PRICING,
+    DEFAULT_PRICING,
+    parseUsageFromLines,
+    estimateCost,
+    getPricing,
+    buildPricingMap,
+    extractLogEntries,
+  }
+}
