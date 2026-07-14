@@ -1,0 +1,26 @@
+{
+  "name": "claude-meter",
+  "version": "1.0.0",
+  "description": "Track token usage, cost, and time savings per Claude Code session.",
+  "license": "MIT",
+  "author": {
+    "name": "Ankan Mondal",
+    "email": "ankan4445@gmail.com"
+  },
+  "homepage": "https://github.com/ankan4445/claude-meter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ankan4445/claude-meter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ankan4445/claude-meter/issues"
+  },
+  "keywords": ["claude-code", "session", "tokens", "cost", "tracking", "analytics"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node tests/run.js"
+  },
+  "private": true
+}
